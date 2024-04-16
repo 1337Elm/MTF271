@@ -12,7 +12,7 @@ plt.close('all')
 
 viscos=1/550
 
-name = './'
+name = './Contraction/'
 
 datax= np.loadtxt(str(name)+"x2d.dat")
 x=datax[0:-1]
@@ -47,6 +47,7 @@ itstep,nk,dz=np.load(str(name)+'itstep.npy')
 p2d=np.load(str(name)+'p_averaged.npy')/itstep
 u2d=np.load(str(name)+'u_averaged.npy')/itstep
 v2d=np.load(str(name)+'v_averaged.npy')/itstep
+w2d=np.load(str(name)+'w_averaged.npy')/itstep
 uu2d=np.load(str(name)+'uu_stress.npy')/itstep
 vv2d=np.load(str(name)+'vv_stress.npy')/itstep
 ww2d=np.load(str(name)+'ww_stress.npy')/itstep
@@ -91,7 +92,7 @@ delta_disp[-1]=delta_disp[-1-1]
 
 # Load DNS channel at Re_tau = 550
 # ----------------------------------------------------------------------------------------------------------------------------------------
-DNS_mean=np.genfromtxt("Re550.dat",comments="%")
+DNS_mean=np.genfromtxt(name + "Re550.dat",comments="%")
 y_DNS=DNS_mean[:,0]
 yplus_DNS=DNS_mean[:,1]
 u_DNS=DNS_mean[:,2]
@@ -108,7 +109,7 @@ vist_DNS = abs(uv_DNS)/dudy_DNS
 
 #%       y/h               y+           dissip          produc         p-strain          p-diff          t-diff         v-diff            bal          tp-kbal
 
-DNS_k_bal=np.genfromtxt("Re550_bal_kbal.dat",comments="%")
+DNS_k_bal=np.genfromtxt(name + "Re550_bal_kbal.dat",comments="%")
 diss_DNS=-DNS_k_bal[:,2]/viscos # it is scaled with ustar**4/viscos
 prod_DNS=DNS_k_bal[:,3]/viscos # it is scaled with ustar**4/viscos
 
@@ -211,4 +212,111 @@ plt.axis([-0.5,5,0,1])
 plt.axis('equal')
 plt.gca().set_aspect('equal', adjustable='box')
 plt.savefig('grid.png',bbox_inches='tight')
+
+
+
+#%%%%%%%%%
+#Plot reynolds stresses
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+y2d = y2d[:,1:]
+plt.plot(uu2d[3,:],yplus2d[3,:],label = "$\overline{u'u'}$")
+plt.plot(vv2d[3,:],yplus2d[3,:],label = "$\overline{v'v'}$")
+plt.plot(ww2d[3,:],yplus2d[3,:],label = "$\overline{w'w'}$")
+
+plt.plot(uv2d[3,:],yplus2d[3,:],label = "$\overline{u'v'}$")
+
+plt.axis([-1,8,0,500])
+plt.legend()
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title(f"Reynolds Stresses along x = {np.round(x2d[3,5],3)}")
+plt.savefig('stresses1.png',bbox_inches = 'tight')
+
+fig59,ax1 = plt.subplots()
+plt.plot(uu2d[-10,:],yplus2d[-10,:],label = "$\overline{u'u'}$")
+plt.plot(vv2d[-10,:],yplus2d[-10,:],label = "$\overline{v'v'}$")
+plt.plot(ww2d[-10,:],yplus2d[-10,:],label = "$\overline{w'w'}$")
+
+plt.plot(uv2d[-10,:],yplus2d[-10,:],label = "$\overline{u'v'}$")
+
+plt.axis([-3,15,225,500])
+plt.legend()
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title(f"Reynolds Stresses along x = {np.round(x2d[-10,5],3)}")
+plt.savefig('stresses2.png',bbox_inches = 'tight')
+
+
+#%%%%%%
+#Plot all terms in v_1 equation
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+#Derivatives
+uu2d_face_w,uu2d_face_s = compute_face_phi(uu2d,fx,fy,ni,nj,zero_bc)
+uv2d_face_w,uv2d_face_s = compute_face_phi(uv2d,fx,fy,ni,nj,zero_bc)
+
+duu2ddx = dphidx(uu2d_face_w,uu2d_face_s,areawy,areasy,vol)
+duv2ddx = dphidx(uv2d_face_w,uv2d_face_s,areawy,areasy,vol)
+
+#Second Derivatives
+dudx_face_w,dudx_face_s = compute_face_phi(dudx,fx,fy,ni,nj,zero_bc)
+dudy_face_w,dudy_face_s = compute_face_phi(dudy,fx,fy,ni,nj,zero_bc)
+
+d2udx2 = dphidx(dudx_face_w,dudx_face_s,areawy,areasy,vol)
+d2udy2 = dphidy(dudy_face_w,dudy_face_s,areawy,areasy,vol)
+
+plt.plot(u2d[3,:]*dudx[3,:],yplus2d[3,:],label = "$\overline{v}_1 \partial \overline{v}_1 / \partial x_1$")
+plt.plot(v2d[3,:]*dudy[3,:],yplus2d[3,:],label = "$\overline{v}_2 \partial \overline{v}_1 / \partial x_2$")
+plt.plot(-dpdx[3,:],yplus2d[3,:],label = "$\partial \overline{p}/\partial x_1$")
+plt.plot(viscos* d2udx2[3,:],yplus2d[3,:],label = "$\\nu \partial^2 \overline{v}_1/\partial x_1^2$")
+
+
+plt.axis([-10,10,0,500])
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title("Terms in " + "$\overline{v}_1$-equation" + f" along x = {np.round(x2d[3,5],3)}")
+plt.savefig('termsV_1-1.png',bbox_inches = 'tight')
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(-duu2ddx[3,:],yplus2d[3,:],label = "$ -\partial \overline{v'^2}_1/\partial x_1$")
+plt.plot(-duv2ddx[3,:],yplus2d[3,:],label = "$ -\partial \overline{v'_1v'_2}/\partial x_1$")
+plt.axis([-550,100,0,500])
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title("Terms in " + "$\overline{v}_1$-equation" + f" along x = {np.round(x2d[3,5],3)}")
+plt.savefig('termsV_1-1_large_terms.png',bbox_inches = 'tight')
+
+fig59,ax1 = plt.subplots()
+plt.plot(u2d[-10,:]*dudx[-10,:],yplus2d[-10,:],label = "$\overline{v}_1 \partial \overline{v}_1 / \partial x_1$")
+plt.plot(v2d[-10,:]*dudy[-10,:],yplus2d[-10,:],label = "$\overline{v}_2 \partial \overline{v}_1 / \partial x_2$")
+plt.plot(-dpdx[-10,:],yplus2d[-10,:],label = "$\partial \overline{p}/\partial x_1$")
+plt.plot(viscos* d2udx2[-10,:],yplus2d[-10,:],label = "$\\nu \partial^2 \overline{v}_1/\partial x_1^2$")
+
+plt.axis([-10,10,225,500])
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title("Terms in " + "$\overline{v}_1$-equation" + f" along x = {np.round(x2d[-10,5],3)}")
+plt.savefig('termsV_1-2.png',bbox_inches = 'tight')
+
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(-duu2ddx[-10,:],yplus2d[-10,:],label = "$ -\partial \overline{v'^2}_1/\partial x_1$")
+plt.plot(-duv2ddx[-10,:],yplus2d[-10,:],label = "$ -\partial \overline{v'_1v'_2}/\partial x_1$")
+plt.axis([-1550,300,225,500])
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title("Terms in " + "$\overline{v}_1$-equation" + f" along x = {np.round(x2d[-10,5],3)}")
+plt.savefig('termsV_1-2_large_terms.png',bbox_inches = 'tight')
+
+#%%%%
+#Plot Production term
 
