@@ -216,14 +216,13 @@ plt.savefig(name + 'grid.png',bbox_inches='tight')
 
 
 #%%%%%%%%%
-#Plot reynolds stresses
+#1.1 Plot reynolds stresses
 grid_line_1 = 3
 grid_line_2 = -10
 
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
 
-y2d = y2d[:,1:]
 plt.plot(uu2d[grid_line_1,:],yplus2d[grid_line_1,:],'b',markersize = 2,label = "$\overline{u'u'}$")
 plt.plot(vv2d[grid_line_1,:],yplus2d[grid_line_1,:],'r--',markersize = 2,label = "$\overline{v'v'}$")
 plt.plot(ww2d[grid_line_1,:],yplus2d[grid_line_1,:],'k-.',markersize = 2,label = "$\overline{w'w'}$")
@@ -253,7 +252,7 @@ plt.savefig(name + 'stresses2.png',bbox_inches = 'tight')
 
 
 #%%%%%%
-#Plot all terms in v_1 equation
+#1.2 Plot all terms in v_1 equation
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
 
@@ -320,7 +319,7 @@ plt.title("Terms in " + "$\overline{v}_1$-equation" + f" along x = {np.round(x2d
 plt.savefig(name + 'termsV_1-2_large_terms.png',bbox_inches = 'tight')
 
 #%%%%
-#Plot Production term
+# 1.3 Plot Production term
 
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
@@ -332,7 +331,7 @@ plt.ylabel("Amplitude")
 plt.title("Production")
 plt.savefig(name + 'prod.png',bbox_inches = 'tight')
 
-#Plot Production term and dissipation
+#1.4 Plot Production term and dissipation
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
 plt.plot(yplus2d[grid_line_1,:],-uv2d[grid_line_1,:]*dudy[grid_line_1,:],'b',markersize = 5,label = "$P^k$" + f" x = {np.round(x2d[grid_line_1,2],3)}")
@@ -349,7 +348,7 @@ plt.savefig(name + 'prod_diss.png',bbox_inches = 'tight')
 
 
 #%%%%%
-#Plot Reynolds stress equation terms
+#1.5 Plot Reynolds stress equation terms
 
 #Choose i = k = 1, j = 2 => u'v'
 
@@ -359,7 +358,7 @@ term_1 = u2d[grid_line_1,:]*dudx[grid_line_1,:]
 term_2 = viscos*duv2ddx[grid_line_1,:]
 term_3_prod = -uu2d[grid_line_1,:]*dvdx[grid_line_1,:] - uv2d[grid_line_1,:]*dudx[grid_line_1,:]
 
-phi_1 = c_1*(kres_2d/diss2d)*uv2d if 
+#phi_1 = c_1*(kres_2d/diss2d)*uv2d if 
 
 #phi = phi_1 + phi_2 + phi_1w + phi_2w
 
@@ -392,3 +391,107 @@ plt.ylabel("$y^+$")
 plt.xlabel("Amplitude")
 plt.title("Dissipation in " + "Reynolds stress equation" + f" along x = {np.round(x2d[grid_line_1,5],3)}")
 plt.savefig(name + 'terms_reynolds_eps.png',bbox_inches = 'tight')
+
+
+
+#%%%%
+#1.6 Compare Boussinesq withh database values
+
+uv2d_boussinesq = [-2*c_mu*(kres_2d[grid_line_1,j]**2 / diss2d[grid_line_1,j])*(kres_2d[grid_line_1,j] / diss2d[grid_line_1,j] * 0.5* (dudy[grid_line_1,j] + dvdx[grid_line_1,j]))\
+                  + (2/3)*kres_2d[grid_line_1,j] if j == grid_line_1 else -2*c_mu*(kres_2d[grid_line_1,j]**2 / diss2d[grid_line_1,j])*(kres_2d[grid_line_1,j] / diss2d[grid_line_1,j] * 0.5* (dudy[grid_line_1,j] + dvdx[grid_line_1,j])) \
+                  for j in range(len(term_5_y))]
+
+uu2d_boussinesq = [-2*c_mu*(kres_2d[grid_line_1,j]**2 / diss2d[grid_line_1,j])*(kres_2d[grid_line_1,j] / diss2d[grid_line_1,j] * 0.5* (dudx[grid_line_1,j] + dudx[grid_line_1,j]))\
+                  + (2/3)*kres_2d[grid_line_1,j] if j == grid_line_1 else -2*c_mu*(kres_2d[grid_line_1,j]**2 / diss2d[grid_line_1,j])*(kres_2d[grid_line_1,j] / diss2d[grid_line_1,j] * 0.5* (dudx[grid_line_1,j] + dudx[grid_line_1,j])) \
+                  for j in range(len(term_5_y))]
+
+vv2d_boussinesq = [-2*c_mu*(kres_2d[grid_line_1,j]**2 / diss2d[grid_line_1,j])*(kres_2d[grid_line_1,j] / diss2d[grid_line_1,j] * 0.5* (dvdy[grid_line_1,j] + dvdy[grid_line_1,j]))\
+                  + (2/3)*kres_2d[grid_line_1,j] if j == grid_line_1 else -2*c_mu*(kres_2d[grid_line_1,j]**2 / diss2d[grid_line_1,j])*(kres_2d[grid_line_1,j] / diss2d[grid_line_1,j] * 0.5* (dvdy[grid_line_1,j] + dvdy[grid_line_1,j])) \
+                  for j in range(len(term_5_y))]
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(uv2d_boussinesq,yplus2d[grid_line_1,:],'b--',markersize = 2,label = "$\overline{u'v'}_{boussinesq}$")
+plt.plot(uv2d[grid_line_1,:],yplus2d[grid_line_1,:],'b',markersize=2,label = "$\overline{u'v'}$")
+plt.plot(uu2d_boussinesq,yplus2d[grid_line_1,:],'r--',markersize = 2,label = "$\overline{u'u'}_{boussinesq}$")
+plt.plot(uu2d[grid_line_1,:],yplus2d[grid_line_1,:],'r',fillstyle = 'none',markersize = 2,linewidth = 2,label = "$\overline{u'u'}$")
+plt.plot(vv2d_boussinesq,yplus2d[grid_line_1,:],'k-.',markersize = 2,label = "$\overline{v'v'}_{boussinesq}$")
+plt.plot(vv2d[grid_line_1,:],yplus2d[grid_line_1,:],'k',fillstyle = 'none',markersize = 2,linewidth = 2,label = "$\overline{v'v'}$")
+#plt.axis([-1550,300,225,500])
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title("Boussinesq stresses compared to database" + f" along x = {np.round(x2d[grid_line_1,5],3)}")
+plt.savefig(name + 'boussinesq.png',bbox_inches = 'tight')
+
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(uv2d_boussinesq,yplus2d[grid_line_1,:],'b--',markersize = 2,label = "$\overline{u'v'}_{boussinesq}$")
+plt.plot(uv2d[grid_line_1,:],yplus2d[grid_line_1,:],'b',markersize=2,label = "$\overline{u'v'}$")
+plt.plot(uu2d_boussinesq,yplus2d[grid_line_1,:],'r--',markersize = 2,label = "$\overline{u'u'}_{boussinesq}$")
+plt.plot(uu2d[grid_line_1,:],yplus2d[grid_line_1,:],'r',fillstyle = 'none',markersize = 2,linewidth = 2,label = "$\overline{u'u'}$")
+plt.plot(vv2d_boussinesq,yplus2d[grid_line_1,:],'k-.',markersize = 2,label = "$\overline{v'v'}_{boussinesq}$")
+plt.plot(vv2d[grid_line_1,:],yplus2d[grid_line_1,:],'k',fillstyle = 'none',markersize = 2,linewidth = 2,label = "$\overline{v'v'}$")
+plt.axis([-1,2.5,0,50])
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title("Boussinesq stresses close to the wall")
+plt.savefig(name + 'boussinesq_wall_zoom.png',bbox_inches = 'tight')
+
+
+#%%%%
+#1.7 Plot modelled production term
+
+P = -uv2d*dudy
+
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+ax.plot_surface(x2d[1:,1:], y2d[1:,1:], P, rstride=1, cstride=1,
+                cmap='viridis', edgecolor='none')
+
+ax.set_zlabel("Production")
+ax.set_ylabel("y")
+ax.set_xlabel("x")
+plt.title("Exact production in the domain")
+plt.savefig(name + "production3d.png")
+
+
+#%%
+#1.8 Eigenvalues
+
+lambda_11 = ((2/3)*0.5**2 * (dudx*2)**2)**(1/2)
+lambda_12 = ((2/3)*0.5**2 * (dudy + dvdx)**2)**(1/2)
+lambda_22 = ((2/3)*0.5**2 * (dvdy*2)**2)**(1/2)
+
+ny_t = c_mu*kres_2d**2/diss2d
+
+ny_t_grid_1 = ny_t[grid_line_1,:]
+ny_t_grid_2 = ny_t[grid_line_2,:]
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(kres_2d[grid_line_1,:]/(3* lambda_11[grid_line_1,:]),yplus2d[grid_line_1,:],'b--',markersize = 4,label = "$(2\hat{s}_{1,1} \hat{s}_{1,1} / 3)^{1/2}$")
+plt.plot(kres_2d[grid_line_1,:]/(3* lambda_12[grid_line_1,:]),yplus2d[grid_line_1,:],'r--',markersize = 3,label = "$(2\hat{s}_{1,2} \hat{s}_{1,2} / 3)^{1/2}$")
+plt.plot(kres_2d[grid_line_1,:]/(3* lambda_22[grid_line_1,:]),yplus2d[grid_line_1,:],'k--',markersize = 2,label = "$(2\hat{s}_{2,2} \hat{s}_{2,2} / 3)^{1/2}$")
+plt.plot(ny_t_grid_1,yplus2d[grid_line_1,:],'g-.',markersize = 2,label = "$\\nu_t$")
+plt.xlim([0,1])
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title("Eigenvalues of strain-rate tensor " + "$\hat{s}_{i,j}$"+ f" along x = {np.round(x2d[grid_line_1,5],3)}")
+plt.savefig(name + 'eigen_values_grid_1.png',bbox_inches = 'tight')
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(kres_2d[grid_line_2,:]/(3* lambda_11[grid_line_2,:]),yplus2d[grid_line_2,:],'b--',markersize = 4,label = "$(2\hat{s}_{1,1} \hat{s}_{1,1} / 3)^{1/2}$")
+plt.plot(kres_2d[grid_line_2,:]/(3* lambda_11[grid_line_2,:]),yplus2d[grid_line_2,:],'r--',markersize = 3,label = "$(2\hat{s}_{1,2} \hat{s}_{1,2} / 3)^{1/2}$")
+plt.plot(kres_2d[grid_line_2,:]/(3* lambda_11[grid_line_2,:]),yplus2d[grid_line_2,:],'k--',markersize = 2,label = "$(2\hat{s}_{2,2} \hat{s}_{2,2} / 3)^{1/2}$")
+plt.plot(ny_t_grid_2,yplus2d[grid_line_2,:],'g-.',markersize = 2,label = "$\\nu_t$")
+plt.xlim([0,1])
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("Amplitude")
+plt.title("Eigenvalues of strain-rate tensor " + "$\hat{s}_{i,j}$"+ f" along x = {np.round(x2d[grid_line_2,5],3)}")
+plt.savefig(name + 'eigen_values_grid_2.png',bbox_inches = 'tight')
