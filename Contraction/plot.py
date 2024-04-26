@@ -261,8 +261,15 @@ uu2d_face_w,uu2d_face_s = compute_face_phi(uu2d,fx,fy,ni,nj,zero_bc)
 uv2d_face_w,uv2d_face_s = compute_face_phi(uv2d,fx,fy,ni,nj,zero_bc)
 
 duu2ddx = dphidx(uu2d_face_w,uu2d_face_s,areawx,areasx,vol)
-duv2ddx = dphidx(uv2d_face_w,uv2d_face_s,areawy,areasy,vol)
+duu2ddy = dphidy(uu2d_face_w,uu2d_face_s,areawy,areasy,vol)
+duv2ddx = dphidx(uv2d_face_w,uv2d_face_s,areawx,areasx,vol)
+duv2ddy = dphidy(uv2d_face_w,uv2d_face_s,areawy,areasy,vol)
 
+duu2ddx_face_w,duu2ddx_face_s = compute_face_phi(duu2ddx,fx,fy,ni,nj,zero_bc)
+
+duu2ddxdy = dphidy(duu2ddx_face_w,duu2ddx_face_s,areawy,areasy,vol)
+d2uu2ddx2 = dphidx(duu2ddx_face_w,duu2ddx_face_s,areawx,areasx,vol)
+d2uu2ddy2 = dphidy(duu2ddx_face_w,duu2ddx_face_s,areawy,areasy,vol)
 #Second Derivatives
 dudx_face_w,dudx_face_s = compute_face_phi(dudx,fx,fy,ni,nj,zero_bc)
 dudy_face_w,dudy_face_s = compute_face_phi(dudy,fx,fy,ni,nj,zero_bc)
@@ -273,8 +280,8 @@ d2udy2 = dphidy(dudy_face_w,dudy_face_s,areawy,areasy,vol)
 plt.plot(u2d[grid_line_1,:]*dudx[grid_line_1,:],yplus2d[grid_line_1,:],'b',markersize = 2,label = "$\overline{v}_1 \partial \overline{v}_1 / \partial x_1$")
 plt.plot(v2d[grid_line_1,:]*dudy[grid_line_1,:],yplus2d[grid_line_1,:],'r--',markersize = 2,label = "$\overline{v}_2 \partial \overline{v}_1 / \partial x_2$")
 plt.plot(-dpdx[grid_line_1,:],yplus2d[grid_line_1,:],'k-.',markersize = 2,label = "$\partial \overline{p}/\partial x_1$")
-plt.plot(-duu2ddx[grid_line_1,:],yplus2d[grid_line_1,:],'bo',fillstyle = 'none',markersize = 2,label = "$ -\partial \overline{v'^2}_1/\partial x_1$")
 plt.plot(viscos* d2udx2[grid_line_1,:],yplus2d[grid_line_1,:],'g:',markersize = 2,label = "$\\nu \partial^2 \overline{v}_1/\partial x_1^2$")
+plt.plot(-duu2ddx[grid_line_1,:],yplus2d[grid_line_1,:],'bo',fillstyle = 'none',markersize = 2,label = "$ -\partial \overline{v'^2}_1/\partial x_1$")
 
 plt.axis([-10,10,0,500])
 plt.legend(fontsize = "10")
@@ -285,11 +292,13 @@ plt.savefig(name + 'termsV_1-1.png',bbox_inches = 'tight')
 
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
-plt.plot(-duv2ddx[grid_line_1,:],yplus2d[grid_line_1,:],'r',label = "$ -\partial \overline{v'_1v'_2}/\partial x_1$")
+plt.plot(-duv2ddy[grid_line_1,:],yplus2d[grid_line_1,:],'r',label = "$ -\partial \overline{v'_1v'_2}/\partial x_1$")
+plt.plot(viscos* d2udy2[grid_line_1,:],yplus2d[grid_line_1,:],'g:',markersize = 2,label = "$\\nu \partial^2 \overline{v}_1/\partial x_2^2$")
 #plt.axis([-550,100,0,500])
 plt.legend(fontsize = "10")
 plt.ylabel("$y^+$")
 plt.xlabel("Amplitude")
+plt.xlim([-50,50])
 plt.title("Terms in " + "$\overline{v}_1$-equation" + f" along x = {np.round(x2d[grid_line_1,5],3)}")
 plt.savefig(name + 'termsV_1-1_large_terms.png',bbox_inches = 'tight')
 
@@ -297,8 +306,8 @@ fig59,ax1 = plt.subplots()
 plt.plot(u2d[grid_line_2,:]*dudx[grid_line_2,:],yplus2d[grid_line_2,:],'b',markersize = 2,label = "$\overline{v}_1 \partial \overline{v}_1 / \partial x_1$")
 plt.plot(v2d[grid_line_2,:]*dudy[grid_line_2,:],yplus2d[grid_line_2,:],'r--',markersize = 2,label = "$\overline{v}_2 \partial \overline{v}_1 / \partial x_2$")
 plt.plot(-dpdx[grid_line_2,:],yplus2d[grid_line_2,:],'k-.',markersize = 2,label = "$\partial \overline{p}/\partial x_1$")
-plt.plot(-duu2ddx[grid_line_2,:],yplus2d[grid_line_2,:],'bo',fillstyle = 'none',markersize = 2,label = "$ -\partial \overline{v'^2}_1/\partial x_1$")
 plt.plot(viscos* d2udx2[grid_line_2,:],yplus2d[grid_line_2,:],'g:',markersize = 2,label = "$\\nu \partial^2 \overline{v}_1/\partial x_1^2$")
+plt.plot(-duu2ddx[grid_line_2,:],yplus2d[grid_line_2,:],'bo',fillstyle = 'none',markersize = 2,label = "$ -\partial \overline{v'^2}_1/\partial x_1$")
 
 plt.axis([-10,10,225,500])
 plt.legend(fontsize = "10")
@@ -310,40 +319,84 @@ plt.savefig(name + 'termsV_1-2.png',bbox_inches = 'tight')
 
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
-plt.plot(-duv2ddx[grid_line_2,:],yplus2d[grid_line_2,:],'r',label = "$ -\partial \overline{v'_1v'_2}/\partial x_1$")
+plt.plot(-duv2ddy[grid_line_2,:],yplus2d[grid_line_2,:],'r',label = "$ -\partial \overline{v'_1v'_2}/\partial x_2$")
+plt.plot(viscos* d2udy2[grid_line_2,:],yplus2d[grid_line_2,:],markersize = 2,label = "$\\nu \partial^2 \overline{v}_1/\partial x_2^2$")
 #plt.axis([-1550,300,225,500])
 plt.legend(fontsize = "10")
 plt.ylabel("$y^+$")
 plt.xlabel("Amplitude")
+plt.xlim([-120,120])
 plt.title("Terms in " + "$\overline{v}_1$-equation" + f" along x = {np.round(x2d[grid_line_2,5],3)}")
 plt.savefig(name + 'termsV_1-2_large_terms.png',bbox_inches = 'tight')
 
 #%%%%
 # 1.3 Plot Production term
+P = -uu2d*dudx - vv2d*dvdy - uv2d*dudy - uv2d*dvdx
 
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
-plt.plot(yplus2d[grid_line_1,:],-uv2d[grid_line_1,:]*dudy[grid_line_1,:],'b',markersize = 2,label = "$P^k$" + f" x = {np.round(x2d[grid_line_1,2],3)}")
-plt.plot(yplus2d[grid_line_2,:],-uv2d[grid_line_2,:]*dudy[grid_line_2,:],'r--',markersize = 2,label = "$P^k$" + f" x = {np.round(x2d[grid_line_2,2],3)}")
+plt.plot(yplus2d[grid_line_1,:],P[grid_line_1,:],'b',markersize = 2,label = "$P^k$" + f" x = {np.round(x2d[grid_line_1,2],3)}")
 plt.legend(fontsize = "10")
 plt.xlabel("$y^+$")
 plt.ylabel("Amplitude")
 plt.title("Production")
-plt.savefig(name + 'prod.png',bbox_inches = 'tight')
+plt.savefig(name + 'prod_1.png',bbox_inches = 'tight')
+
+
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(yplus2d[grid_line_2,:],P[grid_line_2,:],'b',markersize = 2,label = "$P^k$" + f" x = {np.round(x2d[grid_line_2,2],3)}")
+plt.legend(fontsize = "10")
+plt.xlabel("$y^+$")
+plt.ylabel("Amplitude")
+plt.title("Production")
+plt.savefig(name + 'prod_2.png',bbox_inches = 'tight')
+
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(yplus2d[grid_line_1,:],np.abs(uu2d[grid_line_1,:]),'b',markersize = 2,label = "$|\overline{u'^2}|$")
+plt.plot(yplus2d[grid_line_1,:],np.abs(2*uv2d[grid_line_1,:]),'r--',markersize = 2,label = "$|2 \overline{u'v'}|$")
+plt.plot(yplus2d[grid_line_1,:],np.abs(vv2d[grid_line_1,:]),'k-.',markersize = 2,label = "$|\overline{v'^2}|$")
+plt.legend(fontsize = "10")
+plt.xlabel("$y^+$")
+plt.ylabel("Amplitude")
+plt.title("Contribution")
+plt.savefig(name + 'contributions_production_1.png',bbox_inches = 'tight')
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(yplus2d[grid_line_2,:],np.abs(uu2d[grid_line_2,:]),'b',markersize = 2,label = "$|\overline{u'^2}|$")
+plt.plot(yplus2d[grid_line_2,:],np.abs(2*uv2d[grid_line_2,:]),'r--',markersize = 2,label = "$|2 \overline{u'v'}|$")
+plt.plot(yplus2d[grid_line_2,:],np.abs(vv2d[grid_line_2,:]),'k-.',markersize = 2,label = "$|\overline{v'^2}|$")
+plt.legend(fontsize = "10")
+plt.xlabel("$y^+$")
+plt.ylabel("Amplitude")
+plt.title("Contribution")
+plt.savefig(name + 'contributions_production_2.png',bbox_inches = 'tight')
 
 #1.4 Plot Production term and dissipation
+
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
-plt.plot(yplus2d[grid_line_1,:],-uv2d[grid_line_1,:]*dudy[grid_line_1,:],'b',markersize = 5,label = "$P^k$" + f" x = {np.round(x2d[grid_line_1,2],3)}")
-plt.plot(yplus2d[grid_line_1,:],diss2d[grid_line_1,:],'r--',markersize = 5,label = "$\\varepsilon$" + f" x = {np.round(x2d[grid_line_1,2],3)}")
-
-plt.plot(yplus2d[grid_line_2,:],-uv2d[grid_line_2,:]*dudy[grid_line_2,:],'k-.',markersize = 5,label = "$P^k" + f" x = {np.round(x2d[grid_line_2,2],3)}$")
-plt.plot(yplus2d[grid_line_2,:],diss2d[grid_line_2,:],'g:',markersize = 5,label = "$\\varepsilon$" + f" x = {np.round(x2d[grid_line_2,2],3)}")
+plt.plot(yplus2d[grid_line_1,:],P[grid_line_1,:],'b',markersize = 5,label = "$P^k$" + f" x = {np.round(x2d[grid_line_1,2],3)}")
+plt.plot(yplus2d[grid_line_1,:],-diss2d[grid_line_1,:],'r--',markersize = 5,label = "$-\\varepsilon$" + f" x = {np.round(x2d[grid_line_1,2],3)}")
 plt.legend(fontsize = "10")
 plt.xlabel("$y^+$")
 plt.ylabel("Amplitude")
-plt.title("Production")
-plt.savefig(name + 'prod_diss.png',bbox_inches = 'tight')
+plt.title("Production & Dissipation")
+plt.savefig(name + 'prod_diss_1.png',bbox_inches = 'tight')
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(yplus2d[grid_line_2,:],P[grid_line_2,:],'b',markersize = 5,label = "$P^k" + f" x = {np.round(x2d[grid_line_2,2],3)}$")
+plt.plot(yplus2d[grid_line_2,:],-diss2d[grid_line_2,:],'r--',markersize = 5,label = "$-\\varepsilon$" + f" x = {np.round(x2d[grid_line_2,2],3)}")
+plt.legend(fontsize = "10")
+plt.xlabel("$y^+$")
+plt.ylabel("Amplitude")
+plt.title("Production & Dissipation")
+plt.savefig(name + 'prod_diss_2.png',bbox_inches = 'tight')
 
 
 
@@ -354,19 +407,55 @@ plt.savefig(name + 'prod_diss.png',bbox_inches = 'tight')
 
 c_mu, c_1, c_2, c_1w, c_2w, sigma_k, c_k = 0.09, 1.5, 0.6, 0.5, 0.3, 1, 0.2
 
-term_1 = u2d[grid_line_1,:]*dudx[grid_line_1,:]
-term_2 = viscos*duv2ddx[grid_line_1,:]
-term_3_prod = -uu2d[grid_line_1,:]*dvdx[grid_line_1,:] - uv2d[grid_line_1,:]*dudx[grid_line_1,:]
-
-#phi_1 = c_1*(kres_2d/diss2d)*uv2d if 
-
-#phi = phi_1 + phi_2 + phi_1w + phi_2w
+term_1 = u2d[grid_line_1,:]*duv2ddx[grid_line_1,:] + v2d[grid_line_1,:]*duv2ddy[grid_line_1,:]
+term_2 = viscos*(duv2ddx[grid_line_1,:] + duv2ddy[grid_line_1,:])
+term_3_prod = -uu2d[grid_line_1,:]*dvdx[grid_line_1,:] - uv2d[grid_line_1,:]*dvdy[grid_line_1,:] -uv2d[grid_line_1,:]*dudx[grid_line_1,:] - vv2d[grid_line_1,:]*dudy[grid_line_1,:]
 
 D_face_w,D_face_s = compute_face_phi(c_k*vv2d*(kres_2d/diss2d)*duv2ddx,fx,fy,ni,nj,zero_bc)
 dDdy = dphidy(D_face_w,D_face_s,areawy,areasy,vol)
+dDdx = dphidx(D_face_w,D_face_s,areawx,areasx,vol)
 
-term_5_y = dDdy[grid_line_1,:]
-term_6_diss = [-(2/3)*diss2d[grid_line_1,j] if grid_line_1 == j else 0 for j in range(len(term_5_y))]
+kres_face_w,kres_face_s = compute_face_phi(kres_2d,fx,fy,ni,nj,zero_bc)
+dkdy = dphidy(kres_face_w,kres_face_s,areawy,areasy,vol)
+
+dkdy_face_w,dkdy_face_s = compute_face_phi(dkdy,fx,fy,ni,nj,zero_bc)
+d2kdy2 = dphidy(dkdy_face_w,dkdy_face_s,areawy,areasy,vol)
+
+term_5_y = dDdy[grid_line_1,:] + dDdx[grid_line_1,:]
+term_6_diss = [-(2/3)*diss2d[grid_line_1,j]  + viscos*d2kdy2[grid_line_1,j] if grid_line_1 == j else viscos*d2kdy2[grid_line_1,j] for j in range(len(term_5_y))]
+
+n_1 = np.zeros((ni,nj))
+n_2 = np.zeros((ni,nj))
+f = np.zeros((ni,nj))
+dist = np.zeros((ni,nj))
+eps = np.zeros((ni,nj))
+for i in range(1,ni-1):
+   for j in range(1,nj-1):
+      d = np.sqrt((xp2d[i+1,0] - xp2d[i,0])**2 + (yp2d[i+1,0] - yp2d[i,0])**2)
+      s1 = (xp2d[i+1,0] -xp2d[i,0])/d
+      s2 = (y2d[i,j] - y2d[i-1,j])/d
+      n_1[i,j] = s2
+      n_2[i,j] = -s1
+      
+
+      dist[i,j] = np.sqrt((x2d[i,j] - x2d[i,1])**2 + (y2d[i,j] - y2d[i,1])**2)
+      if i == grid_line_1 and i == j:
+         eps[i,j] = -diss2d[i,j] + viscos*d2kdy2[grid_line_1,j]
+      else:
+         eps[i,j] = viscos*d2kdy2[grid_line_1,j]
+
+      f[i,j] = np.min([kres_2d[i,j]**(3/2)/(2.55*np.abs(n_1[i,j]*(xp2d[i,j] - xp2d[i,0]) + n_2[i,j]*(yp2d[i,j] - yp2d[i,0]))*eps[i,j]),1.0])
+
+phi_12_1 = -c_1*diss2d/kres_2d*uv2d
+phi_12_1w = -(3/2)*c_1w*diss2d/kres_2d*uv2d*f
+phi_12_2 = -c_2*(-uu2d*dvdx - uv2d*dvdy - uv2d*dudx - vv2d*dudy)
+
+phi_11_2 = -c_2*(-uu2d*dudx - uv2d*dudy - uu2d*dudx - uv2d*dudy - (2/3)*term_3_prod)
+phi_22_2 = -c_2*(-uv2d*dvdx - vv2d*dvdy - uv2d*dvdx - vv2d*dvdy)
+phi_12_2w = c_2w*(-(3/2)*(phi_11_2*n_1*n_2 + phi_12_2*n_2*n_2) - (3/2)*(phi_12_2*n_1*n_1 + phi_22_2*n_1*n_2))*f
+
+phi = phi_12_1 + phi_12_2 + phi_12_1w + phi_12_2w
+
 
 
 fig59,ax1 = plt.subplots()
@@ -375,24 +464,104 @@ plt.plot(term_1,yplus2d[grid_line_1,:],'b',markersize = 2,label = "$\overline{u}
 plt.plot(term_2,yplus2d[grid_line_1,:],'r--',markersize=2,label = "$\\nu \partial^2 \overline{u'v'}/\partial x^2$")
 plt.plot(term_3_prod,yplus2d[grid_line_1,:],'k-.',markersize = 2,label = "$P_{i,j}$")
 plt.plot(term_5_y,yplus2d[grid_line_1,:],'g-.',fillstyle = 'none',markersize = 2,linewidth = 2,label = "$D_{i,j,2},m=2$")
+plt.plot(term_6_diss,yplus2d[grid_line_1,:],linewidth = 2,label = "$\\varepsilon - \\nu \partial^2 k/\partial y^2$")
 #plt.axis([-1550,300,225,500])
 plt.legend(fontsize = "10")
 plt.ylabel("$y^+$")
-plt.xlabel("Amplitude")
+plt.xlabel("$\overline{u'v'}$")
 plt.title("Terms in " + "Reynolds stress equation" + f" along x = {np.round(x2d[grid_line_1,5],3)}")
 plt.savefig(name + 'terms_reynolds_uv.png',bbox_inches = 'tight')
+
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(phi[grid_line_1,:],yplus2d[grid_line_1,:],linewidth = 2,label = "$\\Phi$")
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("$\overline{u'v'}$")
+plt.title("Terms in " + "Reynolds stress equation" + f" along x = {np.round(x2d[grid_line_1,5],3)}")
+plt.savefig(name + 'terms_6_uv.png',bbox_inches = 'tight')
+
+
+#Choose i = j = 1 => u'u'
+
+c_mu, c_1, c_2, c_1w, c_2w, sigma_k, c_k = 0.09, 1.5, 0.6, 0.5, 0.3, 1, 0.2
+
+term_1 = u2d[grid_line_1,:]*duu2ddx[grid_line_1,:] + v2d[grid_line_1,:]*duu2ddy[grid_line_1,:]
+term_2 = viscos*(d2uu2ddx2[grid_line_1,:] + d2uu2ddy2[grid_line_1,:])
+term_3_prod = -uu2d[grid_line_1,:]*dudx[grid_line_1,:] - uv2d[grid_line_1,:]*dudy[grid_line_1,:] -uu2d[grid_line_1,:]*dudx[grid_line_1,:] - uv2d[grid_line_1,:]*dudy[grid_line_1,:]
+
+D_face_w,D_face_s = compute_face_phi(c_k*vv2d*(kres_2d/diss2d)*duu2ddx,fx,fy,ni,nj,zero_bc)
+dDdy = dphidy(D_face_w,D_face_s,areawy,areasy,vol)
+dDdx = dphidx(D_face_w,D_face_s,areawx,areasx,vol)
+
+kres_face_w,kres_face_s = compute_face_phi(kres_2d,fx,fy,ni,nj,zero_bc)
+dkdy = dphidy(kres_face_w,kres_face_s,areawy,areasy,vol)
+
+dkdy_face_w,dkdy_face_s = compute_face_phi(dkdy,fx,fy,ni,nj,zero_bc)
+d2kdy2 = dphidy(dkdy_face_w,dkdy_face_s,areawy,areasy,vol)
+
+term_5_y = dDdy[grid_line_1,:] + dDdx[grid_line_1,:]
+term_6_diss = [-(2/3)*diss2d[grid_line_1,j]  + viscos*d2kdy2[grid_line_1,j] if grid_line_1 == j else viscos*d2kdy2[grid_line_1,j] for j in range(len(term_5_y))]
+
+n_1 = np.zeros((ni,nj))
+n_2 = np.zeros((ni,nj))
+f = np.zeros((ni,nj))
+dist = np.zeros((ni,nj))
+eps = np.zeros((ni,nj))
+for i in range(1,ni-1):
+   for j in range(1,nj-1):
+      d = np.sqrt((xp2d[i+1,0] - xp2d[i,0])**2 + (yp2d[i+1,0] - yp2d[i,0])**2)
+      s1 = (xp2d[i+1,0] -xp2d[i,0])/d
+      s2 = (y2d[i,j] - y2d[i-1,j])/d
+      n_1[i,j] = s2
+      n_2[i,j] = -s1
+      
+
+      dist[i,j] = np.sqrt((x2d[i,j] - x2d[i,1])**2 + (y2d[i,j] - y2d[i,1])**2)
+      if i == grid_line_1 and i == j:
+         eps[i,j] = -diss2d[i,j] + viscos*d2kdy2[grid_line_1,j]
+      else:
+         eps[i,j] = viscos*d2kdy2[grid_line_1,j]
+
+      f[i,j] = np.min([kres_2d[i,j]**(3/2)/(2.55*np.abs(n_1[i,j]*(xp2d[i,j] - xp2d[i,0]) + n_2[i,j]*(yp2d[i,j] - yp2d[i,0]))*eps[i,j]),1.0])
+
+phi_11_1 = -c_1*diss2d/kres_2d*(uu2d  -(2/3)*kres_2d)
+phi_11_1w = c_1w*diss2d/kres_2d*vv2d*f
+phi_12_1 = -c_1*diss2d/kres_2d*uv2d
+phi_12_1w = -(3/2)*c_1w*diss2d/kres_2d*uv2d*f
+phi_12_2 = -c_2*(-uu2d*dvdx - uv2d*dvdy - uv2d*dudx - vv2d*dudy)
+
+phi_11_2 = -c_2*(-uu2d*dudx - uv2d*dudy - uu2d*dudx - uv2d*dudy - (2/3)*term_3_prod)
+phi_22_2 = -c_2*(-uv2d*dvdx - vv2d*dvdy - uv2d*dvdx - vv2d*dvdy)
+phi_12_2w = c_2w*(-(3/2)*(phi_11_2*n_1*n_2 + phi_12_2*n_2*n_2) - (3/2)*(phi_12_2*n_1*n_1 + phi_22_2*n_1*n_2))*f
+phi_11_2w = c_2w*(phi_11_2*n_1*n_1 + phi_12_2*n_2*n_1 + phi_12_2*n_1*n_2 + phi_22_2*n_2*n_2 - (3/2)*(phi_11_2*n_1*n_1 + phi_12_2*n_1*n_2) - (3/2)*(phi_11_2*n_1*n_1 + phi_12_2*n_1*n_2))
+
+phi = phi_11_1 + phi_11_2 + phi_11_1w + phi_11_2w
+
 
 
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
-plt.plot(term_6_diss,yplus2d[grid_line_1,:],'b',label = "$\\varepsilon_{i,j}$")
+plt.plot(term_1,yplus2d[grid_line_1,:],'b',markersize = 2,label = "$\overline{u} \partial \overline{u'v'}/\partial x$")
+plt.plot(term_2,yplus2d[grid_line_1,:],'r--',markersize=2,label = "$\\nu \partial^2 \overline{u'v'}/\partial x^2$")
+plt.plot(term_3_prod,yplus2d[grid_line_1,:],'k-.',markersize = 2,label = "$P_{i,j}$")
+plt.plot(term_5_y,yplus2d[grid_line_1,:],'g-.',fillstyle = 'none',markersize = 2,linewidth = 2,label = "$D_{i,j,2},m=2$")
+plt.plot(term_6_diss,yplus2d[grid_line_1,:],linewidth = 2,label = "$\\varepsilon - \\nu \partial^2 k/\partial y^2$")
+#plt.axis([-1550,300,225,500])
 plt.legend(fontsize = "10")
 plt.ylabel("$y^+$")
-plt.xlabel("Amplitude")
-plt.title("Dissipation in " + "Reynolds stress equation" + f" along x = {np.round(x2d[grid_line_1,5],3)}")
-plt.savefig(name + 'terms_reynolds_eps.png',bbox_inches = 'tight')
+plt.xlabel("$\overline{u'^2}$")
+plt.title("Terms in " + "Reynolds stress equation" + f" along x = {np.round(x2d[grid_line_1,5],3)}")
+plt.savefig(name + 'terms_reynolds_uu.png',bbox_inches = 'tight')
 
-
+fig59,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(phi[grid_line_1,:],yplus2d[grid_line_1,:],linewidth = 2,label = "$\\Phi$")
+plt.legend(fontsize = "10")
+plt.ylabel("$y^+$")
+plt.xlabel("$\overline{u'^2}$")
+plt.title("Terms in " + "Reynolds stress equation" + f" along x = {np.round(x2d[grid_line_1,5],3)}")
+plt.savefig(name + 'terms_6_uu.png',bbox_inches = 'tight')
 
 #%%%%
 #1.6 Compare Boussinesq withh database values
@@ -448,7 +617,7 @@ P = -uv2d*dudy
 
 fig = plt.figure()
 ax = plt.axes(projection='3d')
-ax.plot_surface(x2d[1:,1:], y2d[1:,1:], P, rstride=1, cstride=1,
+ax.plot_surface(xp2d[:,:], yp2d[:,:], P, rstride=1, cstride=1,
                 cmap='viridis', edgecolor='none')
 
 ax.set_zlabel("Production")
@@ -460,38 +629,59 @@ plt.savefig(name + "production3d.png")
 
 #%%
 #1.8 Eigenvalues
-
-lambda_11 = ((2/3)*0.5**2 * (dudx*2)**2)**(1/2)
-lambda_12 = ((2/3)*0.5**2 * (dudy + dvdx)**2)**(1/2)
-lambda_22 = ((2/3)*0.5**2 * (dvdy*2)**2)**(1/2)
-
 ny_t = c_mu*kres_2d**2/diss2d
 
 ny_t_grid_1 = ny_t[grid_line_1,:]
 ny_t_grid_2 = ny_t[grid_line_2,:]
 
+
+s11 = dudx
+s12 = 0.5*(dudy + dvdx)
+s22 = dvdy
+sij = s11 + 2*s12 + s22
+
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
-plt.plot(kres_2d[grid_line_1,:]/(3* lambda_11[grid_line_1,:]),yplus2d[grid_line_1,:],'b--',markersize = 4,label = "$(2\hat{s}_{1,1} \hat{s}_{1,1} / 3)^{1/2}$")
-plt.plot(kres_2d[grid_line_1,:]/(3* lambda_12[grid_line_1,:]),yplus2d[grid_line_1,:],'r--',markersize = 3,label = "$(2\hat{s}_{1,2} \hat{s}_{1,2} / 3)^{1/2}$")
-plt.plot(kres_2d[grid_line_1,:]/(3* lambda_22[grid_line_1,:]),yplus2d[grid_line_1,:],'k--',markersize = 2,label = "$(2\hat{s}_{2,2} \hat{s}_{2,2} / 3)^{1/2}$")
+plt.plot(kres_2d[grid_line_1,:]/3 * np.sqrt(2/(sij[grid_line_1,:]*sij[grid_line_1,:])),yplus2d[grid_line_1,:],'b--',markersize = 4,label = "$ k / 3*(2/\hat{s}_{i,j} \hat{s}_{i,j})^{1/2}$")
 plt.plot(ny_t_grid_1,yplus2d[grid_line_1,:],'g-.',markersize = 2,label = "$\\nu_t$")
-plt.xlim([0,1])
+#plt.xlim([0,1])
 plt.legend(fontsize = "10")
 plt.ylabel("$y^+$")
 plt.xlabel("Amplitude")
-plt.title("Eigenvalues of strain-rate tensor " + "$\hat{s}_{i,j}$"+ f" along x = {np.round(x2d[grid_line_1,5],3)}")
+plt.title("Eigenvalues of strain-rate tensor " + "$\hat{s}_{i,j}$"+ f" along x = {np.round(xp2d[grid_line_1,5],3)}")
 plt.savefig(name + 'eigen_values_grid_1.png',bbox_inches = 'tight')
 
 fig59,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
-plt.plot(kres_2d[grid_line_2,:]/(3* lambda_11[grid_line_2,:]),yplus2d[grid_line_2,:],'b--',markersize = 4,label = "$(2\hat{s}_{1,1} \hat{s}_{1,1} / 3)^{1/2}$")
-plt.plot(kres_2d[grid_line_2,:]/(3* lambda_11[grid_line_2,:]),yplus2d[grid_line_2,:],'r--',markersize = 3,label = "$(2\hat{s}_{1,2} \hat{s}_{1,2} / 3)^{1/2}$")
-plt.plot(kres_2d[grid_line_2,:]/(3* lambda_11[grid_line_2,:]),yplus2d[grid_line_2,:],'k--',markersize = 2,label = "$(2\hat{s}_{2,2} \hat{s}_{2,2} / 3)^{1/2}$")
+plt.plot(kres_2d[grid_line_2,:]/3 *  np.sqrt(2/(sij[grid_line_2,:]*sij[grid_line_2,:])),yplus2d[grid_line_2,:],'b--',markersize = 4,label = "$ k / 3*(2/\hat{s}_{i,j} \hat{s}_{i,j})^{1/2}$")
 plt.plot(ny_t_grid_2,yplus2d[grid_line_2,:],'g-.',markersize = 2,label = "$\\nu_t$")
-plt.xlim([0,1])
+#plt.xlim([0,1])
 plt.legend(fontsize = "10")
 plt.ylabel("$y^+$")
 plt.xlabel("Amplitude")
-plt.title("Eigenvalues of strain-rate tensor " + "$\hat{s}_{i,j}$"+ f" along x = {np.round(x2d[grid_line_2,5],3)}")
+plt.title("Eigenvalues of strain-rate tensor " + "$\hat{s}_{i,j}$"+ f" along x = {np.round(xp2d[grid_line_2,5],3)}")
 plt.savefig(name + 'eigen_values_grid_2.png',bbox_inches = 'tight')
+
+limiter = kres_2d/3 * np.sqrt(2/(sij*sij))
+
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+ax.plot_surface(xp2d[:,:], yp2d[:,:], limiter, rstride=1, cstride=1,
+                cmap='viridis', edgecolor='none')
+
+ax.set_zlim([0,0.5])
+
+ax.set_ylabel("y")
+ax.set_xlabel("x")
+plt.title("Limiter in the domain")
+plt.savefig(name + "limiter3d.png")
+
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+ax.plot_surface(xp2d[:,:], yp2d[:,:], ny_t, rstride=1, cstride=1,
+                cmap='viridis', edgecolor='none')
+
+ax.set_ylabel("y")
+ax.set_xlabel("x")
+plt.title("$\\nu_t$" + " in the domain")
+plt.savefig(name + "ny_t3d.png")
