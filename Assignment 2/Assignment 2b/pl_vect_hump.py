@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from dphidx_dy import dphidx_dy
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from grad_xyz import *
 plt.rcParams.update({'font.size': 22})
 plt.interactive(True)
 name_dat = "Assignment 2/Assignment 2b/data/"
@@ -166,3 +167,278 @@ plt.title("vector plot")
 plt.savefig('Assignment 2/Assignment 2b/vect_python_eps.png')
 
 
+
+#T.1 Discretization themes
+lines = [0.65, 0.8, 0.9, 1, 1.10, 1.20, 1.30]
+indx1 = np.abs(x_2d[:,0]- np.repeat(lines[0],len(x_2d[:,0]))).argmin()
+indx2 = np.abs(x_2d[:,0]- np.repeat(lines[1],len(x_2d[:,0]))).argmin()
+indx3 = np.abs(x_2d[:,0]- np.repeat(lines[2],len(x_2d[:,0]))).argmin()
+indx4 = np.abs(x_2d[:,0]- np.repeat(lines[3],len(x_2d[:,0]))).argmin()
+indx5 = np.abs(x_2d[:,0]- np.repeat(lines[4],len(x_2d[:,0]))).argmin()
+indx6 = np.abs(x_2d[:,0]- np.repeat(lines[5],len(x_2d[:,0]))).argmin()
+indx7 = np.abs(x_2d[:,0]- np.repeat(lines[6],len(x_2d[:,0]))).argmin()
+
+
+
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx1,:],y_2d[indx1,:],'b',label="x_1")
+plt.plot(uv_2d[indx2,:],y_2d[indx2,:],'r',label="x_2")
+plt.plot(uv_2d[indx3,:],y_2d[indx3,:],'k',label="x_3")
+
+plt.xlabel("$x$")
+plt.ylabel("$y$")
+plt.legend()
+plt.title("")
+plt.savefig('Assignment 2/Assignment 2b/uv_nodes1-3.png')
+
+
+
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx4,:],y_2d[indx4,:],'g',label="x_4")
+plt.plot(uv_2d[indx5,:],y_2d[indx5,:],'b',label="x_5")
+plt.plot(uv_2d[indx6,:],y_2d[indx6,:],'r',label="x_6")
+plt.plot(uv_2d[indx7,:],y_2d[indx7,:],'k',label="x_7")
+
+plt.xlabel("$x$")
+plt.ylabel("$y$")
+plt.legend()
+plt.title("")
+plt.savefig('Assignment 2/Assignment 2b/uv_nodes4-7.png')
+
+
+#T.2 The modeled turbulent shear stress
+
+v_t_v = (vis_2d-viscos)/viscos
+
+#Closest index above 1, rather plot more than boundary layer than not all of boundary layer
+boundary_thickness_indx1 = np.abs(v_t_v[indx1,:]- np.repeat(1,len(v_t_v[indx1,:]))).argmin() + 1
+boundary_thickness_indx2 = np.abs(v_t_v[indx2,:]- np.repeat(1,len(v_t_v[indx2,:]))).argmin()
+boundary_thickness_indx3 = np.abs(v_t_v[indx3,:]- np.repeat(1,len(v_t_v[indx3,:]))).argmin() - 1
+boundary_thickness_indx4 = np.abs(v_t_v[indx4,:]- np.repeat(1,len(v_t_v[indx4,:]))).argmin() 
+boundary_thickness_indx5 = np.abs(v_t_v[indx5,:]- np.repeat(1,len(v_t_v[indx5,:]))).argmin() - 1
+boundary_thickness_indx6 = np.abs(v_t_v[indx6,:]- np.repeat(1,len(v_t_v[indx6,:]))).argmin() + 1
+boundary_thickness_indx7 = np.abs(v_t_v[indx7,:]- np.repeat(1,len(v_t_v[indx7,:]))).argmin() - 1
+
+"""
+print(v_t_v[indx1,boundary_thickness_indx1])
+print(v_t_v[indx2,boundary_thickness_indx2])
+print(v_t_v[indx3,boundary_thickness_indx3])
+print(v_t_v[indx4,boundary_thickness_indx4])
+print(v_t_v[indx5,boundary_thickness_indx5])
+print(v_t_v[indx6,boundary_thickness_indx6])
+print(v_t_v[indx7,boundary_thickness_indx7])
+"""
+
+uv_model_2d = np.reshape(uv_model,(ni,nj))
+
+
+#1
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx1,:boundary_thickness_indx1],y_2d[indx1,:boundary_thickness_indx1],'b',label="$\overline{u'v'}_{Res}$")
+plt.plot(uv_model_2d[indx1,:boundary_thickness_indx1],y_2d[indx1,:boundary_thickness_indx1],'r',label="$\overline{u'v'}_{Mod}$")
+
+plt.xlabel("$\overline{u'v'}$")
+plt.ylabel("$y$")
+plt.legend()
+plt.title("Shear stress, x = " + str(lines[0]))
+plt.savefig('Assignment 2/Assignment 2b/shear_stress_comparoison_node1.png')
+
+#2
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx2,:boundary_thickness_indx2],y_2d[indx2,:boundary_thickness_indx2],'b',label="$\overline{u'v'}_{Res}$")
+plt.plot(uv_model_2d[indx2,:boundary_thickness_indx2],y_2d[indx2,:boundary_thickness_indx2],'r',label="$\overline{u'v'}_{Mod}$")
+
+
+plt.xlabel("$\overline{u'v'}$")
+plt.ylabel("$y$")
+plt.title("Shear stress, x = " + str(lines[1]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/shear_stress_comparoison_node2.png')
+
+
+#3
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx3,:boundary_thickness_indx3],y_2d[indx3,:boundary_thickness_indx3],'b',label="$\overline{u'v'}_{Res}$")
+plt.plot(uv_model_2d[indx3,:boundary_thickness_indx3],y_2d[indx3,:boundary_thickness_indx3],'r',label="$\overline{u'v'}_{Mod}$")
+
+
+plt.xlabel("$\overline{u'v'}$")
+plt.ylabel("$y$")
+plt.title("Shear stress, x = " + str(lines[2]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/shear_stress_comparoison_node3.png')
+
+
+#4
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'b',label="$\overline{u'v'}_{Res}$")
+plt.plot(uv_model_2d[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'r',label="$\overline{u'v'}_{Mod}$")
+
+
+plt.xlabel("$\overline{u'v'}$")
+plt.ylabel("$y$")
+plt.title("Shear stress, x = " + str(lines[3]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/shear_stress_comparoison_node4.png')
+
+
+#5
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx5,:boundary_thickness_indx5],y_2d[indx5,:boundary_thickness_indx5],'b',label="$\overline{u'v'}_{Res}$")
+plt.plot(uv_model_2d[indx5,:boundary_thickness_indx5],y_2d[indx5,:boundary_thickness_indx5],'r',label="$\overline{u'v'}_{Mod}$")
+
+
+plt.xlabel("$\overline{u'v'}$")
+plt.ylabel("$y$")
+plt.title("Shear stress, x = " + str(lines[4]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/shear_stress_comparoison_node5.png')
+
+
+#6
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx6,:boundary_thickness_indx6],y_2d[indx6,:boundary_thickness_indx6],'b',label="$\overline{u'v'}_{Res}$")
+plt.plot(uv_model_2d[indx6,:boundary_thickness_indx6],y_2d[indx6,:boundary_thickness_indx6],'r',label="$\overline{u'v'}_{Mod}$")
+
+
+plt.xlabel("$\overline{u'v'}$")
+plt.ylabel("$y$")
+plt.title("Shear stress, x = " + str(lines[5]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/shear_stress_comparoison_node6.png')
+
+
+#7
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(uv_2d[indx7,:boundary_thickness_indx7],y_2d[indx7,:boundary_thickness_indx7],'b',label="$\overline{u'v'}_{Res}$")
+plt.plot(uv_model_2d[indx7,:boundary_thickness_indx7],y_2d[indx7,:boundary_thickness_indx7],'r',label="$\overline{u'v'}_{Mod}$")
+
+
+plt.xlabel("$\overline{u'v'}$")
+plt.ylabel("$y$")
+plt.title("Shear stress, x = " + str(lines[6]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/shear_stress_comparoison_node7.png')
+
+
+
+#T.3 The turbulent viscosity
+
+
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(v_t_v[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'b',label="$\\nu_t$")
+
+
+plt.xlabel("$\\nu_t$")
+plt.ylabel("$y$")
+plt.title("Turbulent viscosity, x = " + str(lines[3]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/viscos_turb_node4.png')
+
+duudx,duudy=dphidx_dy(x_2d_new,y_2d_new,uu_2d)
+dvvdx,dvvdy=dphidx_dy(x_2d_new,y_2d_new,vv_2d)
+duvdx,duvdy=dphidx_dy(x_2d_new,y_2d_new,uv_2d)
+
+
+dvdx,dvdy = dphidx_dy(x_2d_new,y_2d_new,v_2d)
+
+term_1_1 = dphidx_dy(x_2d_new,y_2d_new,v_t_v*dudx)[0]
+term_1_2 = dphidx_dy(x_2d_new,y_2d_new,v_t_v*dudy)[1]
+term_1_3 = dphidx_dy(x_2d_new,y_2d_new,v_t_v*dvdx)[0]
+term_1_4 = dphidx_dy(x_2d_new,y_2d_new,v_t_v*dvdy)[1]
+term_1 = term_1_1 + term_1_2 + term_1_3 + term_1_4
+
+term_2 = -duudx - duvdy - duvdx - dvvdy
+
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(term_1[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'b',label="$\partial / \partial x_j (\\langle \\nu_t \partial \overline{v}_i/\partial x_j\\rangle)$")
+
+plt.xlabel("")
+plt.ylabel("$y$")
+plt.title("Modeled, x = " + str(lines[3]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/term_1_node4.png')
+
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(term_2[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'b',label="$-\partial \\langle v_i'v_j' \\rangle/\partial x_j$")
+
+plt.xlabel("")
+plt.ylabel("$y$")
+plt.title("Resolved, x = " + str(lines[3]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/term_2_node4.png')
+
+
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(term_1[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'b',label="$\partial / \partial x_j (\\langle \\nu_t \partial \overline{v}_i/\partial x_j\\rangle)$")
+plt.plot(term_2[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'r',label="$-\partial \\langle v_i'v_j' \\rangle/\partial x_j$")
+
+plt.xlabel("")
+plt.ylabel("$y$")
+plt.title("Comparison, x = " + str(lines[3]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/term_12_node4.png')
+
+
+# read data file
+vectz=np.genfromtxt(name_dat + "vectz_aiaa_journal.dat",comments="%")
+ntstep=vectz[0]
+n=len(vectz)
+
+#            write(48,*)uvec(i,j)
+#            write(48,*)vvec(i,j)
+#            write(48,*)dummy(i,j)
+#            write(48,*)uvec2(i,j)
+#            write(48,*)vvec2(i,j)
+#            write(48,*)wvec2(i,j)
+#            write(48,*)uvvec(i,j)
+#            write(48,*)p2D(i,j)
+#            write(48,*)rk2D(i,j)
+#            write(48,*)vis2D(i,j)  
+#            write(48,*)dissp2D(i,j)
+#            write(48,*)uvturb(i,j)
+
+nn=12
+nst=0
+ivis=range(nst+10,n,nn)
+
+vis_journal=vectz[ivis]/ntstep
+vis_2d_journal=np.reshape(vis_journal,(ni,nj)) #this is to total viscosity, i.e. vis_tot=vis+vis_turb
+
+v_t_v_journal = (vis_2d_journal-viscos)/viscos
+
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(v_t_v[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'b',label="$\\nu_{t-214}$")
+plt.plot(v_t_v_journal[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'r',label="$\\nu_{t-179}$")
+
+plt.xlabel("")
+plt.ylabel("$y$")
+plt.title("Comparison, x = " + str(lines[3]))
+plt.legend()
+plt.savefig('Assignment 2/Assignment 2b/turb_viscosity_comparison.png')
