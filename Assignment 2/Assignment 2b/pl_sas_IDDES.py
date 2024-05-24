@@ -6,13 +6,14 @@ from grad_xyz import dphidx_2d,dphidy_2d,compute_face_2d,compute_geometry_2d, \
                      dphidx,dphidy,dphidz,compute_face,compute_geometry
 plt.rcParams.update({'font.size': 22})
 plt.interactive(True)
+name_dat = "Assignment 2/Assignment 2b/data/"
 re =9.36e+5
 viscos =1/re
 
-datax= np.loadtxt('x2d_hump_IDDES.dat')
+datax= np.loadtxt(name_dat + 'x2d_hump_IDDES.dat')
 x=datax[0:-1]
 ni=int(datax[-1])
-datay= np.loadtxt('y2d_hump_IDDES.dat')
+datay= np.loadtxt(name_dat + 'y2d_hump_IDDES.dat')
 y=datay[0:-1]
 nj=int(datay[-1])
 
@@ -28,7 +29,7 @@ yp2d=0.25*(y2d[0:-1,0:-1]+y2d[0:-1,1:]+y2d[1:,0:-1]+y2d[1:,1:])
 
 
 # z grid
-zmax, nk=np.loadtxt('z_hump_IDDES.dat')
+zmax, nk=np.loadtxt(name_dat + 'z_hump_IDDES.dat')
 nk=int(nk)
 dz=zmax/nk
 
@@ -44,7 +45,7 @@ for n in range(0,(nfiles)):
    nn=n*100
    print('time step no: ',nn)
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  read v_1 & transform v_1 to a 3D array (file 1)
-   u3d = np.load('u3d_saved_'+str(nn)+'.npy')
+   u3d = np.load(name_dat + 'u3d_saved_'+str(nn)+'.npy')
    u3d_nfiles[:,:,:,n]= u3d
 
 # merge nfiles. This means that new nk = nfiles*nk

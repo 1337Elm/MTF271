@@ -442,3 +442,5 @@ plt.ylabel("$y$")
 plt.title("Comparison, x = " + str(lines[3]))
 plt.legend()
 plt.savefig('Assignment 2/Assignment 2b/turb_viscosity_comparison.png')
+
+

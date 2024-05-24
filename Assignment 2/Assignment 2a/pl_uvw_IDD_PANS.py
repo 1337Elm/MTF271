@@ -408,6 +408,20 @@ plt.title("Interface")
 
 plt.savefig('Assignment 2/Assignment 2a/interface_ddes.png')
 
+fig1,ax1 = plt.subplots()
+plt.subplots_adjust(left=0.20,bottom=0.20)
+
+plt.plot(yplus[2:],F_ddes,'b',label="$F_{DDES}$")
+plt.plot(yplus[1:],F_des,'r',label="$F_{DDES}$")
+
+plt.plot(yplus,np.ones(len(yplus)),'k-.')
+
+plt.xlabel("$y^+$")
+plt.legend()
+plt.title("Interface")
+
+plt.savefig('Assignment 2/Assignment 2a/interface_ddes_des.png')
+
 
 #S.7 SAS turbulent length scales
 kappa = 0.41
