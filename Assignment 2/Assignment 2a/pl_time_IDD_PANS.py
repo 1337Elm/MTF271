@@ -68,60 +68,24 @@ plt.subplots_adjust(left=0.20,bottom=0.20)
 plt.plot(t,w1,'b-')
 plt.plot(t[::30],w1[::30],'bo',label="$\overline{v}_3 / u_\\tau$")
 
-plt.xlabel('$t$')
-plt.axis([9,20,-1.5, 1.5])
-plt.ylabel('$w$')
-plt.title("History of " + "$\overline{v}_3 / u_\\tau$" + " at node 1")
-plt.savefig('Assignment 2/Assignment 2a/w-time_eps_node1.png')
+plt.plot(t,w2,'r-')
+plt.plot(t[::30],w2[::30],'ro',label="$\overline{v}_3 / u_\\tau$")
 
-fig1,ax1 = plt.subplots()
-plt.subplots_adjust(left=0.20,bottom=0.20)
+plt.plot(t,w3,'k-')
+plt.plot(t[::30],w3[::30],'ko',label="$\overline{v}_3 / u_\\tau$")
 
-plt.plot(t,w2,'b-')
-plt.plot(t[::30],w2[::30],'bo',label="$\overline{v}_3 / u_\\tau$")
+plt.plot(t,w4,'g-')
+plt.plot(t[::30],w4[::30],'go',label="$\overline{v}_3 / u_\\tau$")
 
-plt.xlabel('$t$')
-plt.axis([9,20,-1.5, 1.5])
-plt.ylabel('$w$')
-plt.title("History of " + "$\overline{v}_3 / u_\\tau$" + " at node 2")
-plt.savefig('Assignment 2/Assignment 2a/w-time_eps_node2.png')
-
-fig1,ax1 = plt.subplots()
-plt.subplots_adjust(left=0.20,bottom=0.20)
-
-plt.plot(t,w3,'b-')
-plt.plot(t[::30],w3[::30],'bo',label="$\overline{v}_3 / u_\\tau$")
+plt.plot(t,w5,'y-')
+plt.plot(t[::30],w5[::30],'yo',label="$\overline{v}_3 / u_\\tau$")
 
 plt.xlabel('$t$')
-plt.axis([9,20,-1.5, 1.5])
+#plt.axis([10,11,-1.5, 1.5])
+plt.xlim([10, 11])
 plt.ylabel('$w$')
-plt.title("History of " + "$\overline{v}_3 / u_\\tau$" + " at node 3")
-plt.savefig('Assignment 2/Assignment 2a/w-time_eps_node3.png')
-
-fig1,ax1 = plt.subplots()
-plt.subplots_adjust(left=0.20,bottom=0.20)
-
-plt.plot(t,w4,'b-')
-plt.plot(t[::30],w4[::30],'bo',label="$\overline{v}_3 / u_\\tau$")
-
-plt.xlabel('$t$')
-plt.axis([9,20,-1.5, 1.5])
-plt.ylabel('$w$')
-plt.title("History of " + "$\overline{v}_3 / u_\\tau$" + " at node 4")
-plt.savefig('Assignment 2/Assignment 2a/w-time_eps_node4.png')
-
-fig1,ax1 = plt.subplots()
-plt.subplots_adjust(left=0.20,bottom=0.20)
-
-plt.plot(t,w5,'b-')
-plt.plot(t[::30],w5[::30],'bo',label="$\overline{v}_3 / u_\\tau$")
-
-plt.xlabel('$t$')
-plt.axis([9,20,-1.5, 1.5])
-plt.ylabel('$w$')
-plt.title("History of " + "$\overline{v}_3 / u_\\tau$" + " at node 5")
-plt.savefig('Assignment 2/Assignment 2a/w-time_eps_node5.png')
-
+plt.title("History of " + "$\overline{v}_3 / u_\\tau$" + " at 5 nodes")
+plt.savefig('Assignment 2/Assignment 2a/w-time_eps.png')
 
 #Compute autocorrelation
 u1_fluct=u1-np.mean(u1)
@@ -132,8 +96,18 @@ nmax=np.argmax(two)
 two_max=np.max(two)
 # Pick the right half and normalize
 two_sym_norm=two[nmax:]/two_max
-dt=t[1]-t[0]
-int_T_1=np.trapz(two_sym_norm)*dt
+#dt=t[1]-t[0]
+node1v1_sym_norm_INT = np.zeros(nmax)
+
+nmax_auto_1 = 0
+for i in range(nmax):
+    node1v1_sym_norm_INT[i] = two_sym_norm[i]
+    if two_sym_norm[i] < two_sym_norm[i+1]:
+        nmax_auto_1 = i        
+        break
+
+int_T_1=np.trapz(node1v1_sym_norm_INT)*dt
+
 
 u2_fluct=u2-np.mean(u2)
 two_2=np.correlate(u2_fluct,u2_fluct,"full")
@@ -143,8 +117,17 @@ nmax_2=np.argmax(two_2)
 two_max_2=np.max(two_2)
 # Pick the right half and normalize
 two_sym_norm_2=two_2[nmax_2:]/two_max_2
-dt=t[1]-t[0]
-int_T_2=np.trapz(two_sym_norm_2)*dt
+
+node1v1_sym_norm_INT = np.zeros(nmax_2)
+
+nmax_auto_1 = 0
+for i in range(nmax):
+    node1v1_sym_norm_INT[i] = two_sym_norm_2[i]
+    if two_sym_norm_2[i] < two_sym_norm_2[i+1]:
+        nmax_auto_1 = i        
+        break
+
+int_T_2=np.trapz(node1v1_sym_norm_INT)*dt
 
 u3_fluct=u3-np.mean(u3)
 two_3=np.correlate(u3_fluct,u3_fluct,"full")
@@ -154,8 +137,17 @@ nmax_3=np.argmax(two_3)
 two_max_3=np.max(two_3)
 # Pick the right half and normalize
 two_sym_norm_3=two_3[nmax_3:]/two_max_3
-dt=t[1]-t[0]
-int_T_3=np.trapz(two_sym_norm_3)*dt
+
+node1v1_sym_norm_INT = np.zeros(nmax_3)
+
+nmax_auto_1 = 0
+for i in range(nmax):
+    node1v1_sym_norm_INT[i] = two_sym_norm_3[i]
+    if two_sym_norm_3[i] < two_sym_norm_3[i+1]:
+        nmax_auto_1 = i        
+        break
+
+int_T_3=np.trapz(node1v1_sym_norm_INT)*dt
 
 u4_fluct=u4-np.mean(u4)
 two_4=np.correlate(u4_fluct,u4_fluct,"full")
@@ -165,8 +157,17 @@ nmax_4=np.argmax(two_4)
 two_max_4=np.max(two_4)
 # Pick the right half and normalize
 two_sym_norm_4=two_4[nmax_4:]/two_max_4
-dt=t[1]-t[0]
-int_T_4=np.trapz(two_sym_norm_4)*dt
+
+node1v1_sym_norm_INT = np.zeros(nmax_4)
+
+nmax_auto_1 = 0
+for i in range(nmax):
+    node1v1_sym_norm_INT[i] = two_sym_norm_4[i]
+    if two_sym_norm_4[i] < two_sym_norm_4[i+1]:
+        nmax_auto_1 = i        
+        break
+
+int_T_4=np.trapz(node1v1_sym_norm_INT)*dt
 
 u5_fluct=u5-np.mean(u5)
 two_5=np.correlate(u5_fluct,u5_fluct,"full")
@@ -176,8 +177,17 @@ nmax_5=np.argmax(two_5)
 two_max_5=np.max(two_5)
 # Pick the right half and normalize
 two_sym_norm_5=two_5[nmax_5:]/two_max_5
-dt=t[1]-t[0]
-int_T_5=np.trapz(two_sym_norm_5)*dt
+
+node1v1_sym_norm_INT = np.zeros(nmax_5)
+
+nmax_auto_1 = 0
+for i in range(nmax):
+    node1v1_sym_norm_INT[i] = two_sym_norm_5[i]
+    if two_sym_norm_5[i] < two_sym_norm_5[i+1]:
+        nmax_auto_1 = i        
+        break
+
+int_T_5=np.trapz(node1v1_sym_norm_INT)*dt
 
 fig1,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)

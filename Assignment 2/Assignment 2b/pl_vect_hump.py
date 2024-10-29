@@ -373,7 +373,7 @@ term_2 = -duudx - duvdy - duvdx - dvvdy
 fig1,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
 
-plt.plot(term_1[indx4,:boundary_thickness_indx4],y_2d[indx4,:boundary_thickness_indx4],'b',label="$\partial / \partial x_j (\\langle \\nu_t \partial \overline{v}_i/\partial x_j\\rangle)$")
+plt.plot(term_1[indx4,13:boundary_thickness_indx4],y_2d[indx4,13:boundary_thickness_indx4],'b',label="$\partial / \partial x_j (\\langle \\nu_t \partial \overline{v}_i/\partial x_j\\rangle)$")
 
 plt.xlabel("")
 plt.ylabel("$y$")

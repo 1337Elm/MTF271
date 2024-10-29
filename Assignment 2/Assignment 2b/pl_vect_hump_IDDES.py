@@ -247,7 +247,6 @@ plt.savefig('Assignment 2/Assignment 2b/viscos_node_4_7.png')
 
 
 #Shear stress
-
 uv_mod = -(vis2d-viscos)*(dudy + dvdx)
 fig1,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
@@ -376,6 +375,7 @@ plt.xlabel("$x$")
 #plt.legend()
 plt.title("Boundary layer ratios")
 plt.savefig('Assignment 2/Assignment 2b/boundary_layer_ratios_z.png')
+
 
 #Shear stress Energy Comp
 fig1,ax1 = plt.subplots()

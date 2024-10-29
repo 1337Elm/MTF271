@@ -366,7 +366,7 @@ plt.plot(yplus,np.repeat(C_des*delta,len(yplus)),'b',label="$C_{DES}\\Delta$")
 plt.plot(yplus,yplus,'k',label="$y^+$")
 
 plt.axis([0,0.1,0.03,0.05])
-plt.xlabel("$y^+$")
+plt.xlabel("$y$")
 plt.legend()
 plt.title("Interface SA-DES")
 
@@ -412,7 +412,7 @@ fig1,ax1 = plt.subplots()
 plt.subplots_adjust(left=0.20,bottom=0.20)
 
 plt.plot(yplus[2:],F_ddes,'b',label="$F_{DDES}$")
-plt.plot(yplus[1:],F_des,'r',label="$F_{DDES}$")
+plt.plot(yplus[1:],F_des,'r',label="$F_{DES}$")
 
 plt.plot(yplus,np.ones(len(yplus)),'k-.')
 
@@ -529,6 +529,8 @@ plt.plot(yplus[1:],P_sas_inst,'b',label="$P_{SAS-inst}$")
 plt.plot(yplus[1:],P_sas_steady,'r',label="$P_{SAS-steady}$")
 plt.plot(yplus[1:],P_omega,'k',label="$P^{\omega}$")
 plt.ylim([0,5])
+
+plt.xlim([150,5000])
 
 plt.xlabel("$y^+$")
 plt.legend()
