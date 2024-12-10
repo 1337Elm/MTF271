@@ -103,20 +103,21 @@ w_y_z_t= np.reshape(w_time,(nt,nj,nk))
 w_y_z_t_130= np.swapaxes(w_y_z_t,0,2) #nk,nj,nt
 w_y_z_t_130= np.swapaxes(w_y_z_t_130,0,1)
 
-B33_norm = np.zeros((4,nj,nk))
-for x in range(len(B33_norm[:,0,0])):
+x_pos = [0.65,0.8,1.1,1.3]
+B33_norm = np.zeros((len(x_pos),nj,nk))
+for x in range(len(x_pos)):
    for j in range(nj):
       for k in range(nk):
          for n in range(nt):
             match x:
                case 1:
-                  B33_norm[x,j,k] = w_y_z_t_65[j,9,n]*w_y_z_t_65[j,k,n]/nt
+                  B33_norm[x,j,k] = B33_norm[x,j,k] + w_y_z_t_65[j,0,n]*w_y_z_t_65[j,k,n]/nt
                case 2:
-                  B33_norm[x,j,k] = w_y_z_t_80[j,0,n]*w_y_z_t_80[j,k,n]/nt
+                  B33_norm[x,j,k] = B33_norm[x,j,k] + w_y_z_t_80[j,0,n]*w_y_z_t_80[j,k,n]/nt
                case 3:
-                  B33_norm[x,j,k] = w_y_z_t_110[j,0,n]*w_y_z_t_110[j,k,n]/nt
+                  B33_norm[x,j,k] = B33_norm[x,j,k] + w_y_z_t_110[j,0,n]*w_y_z_t_110[j,k,n]/nt
                case 4:
-                  B33_norm[x,j,k] = w_y_z_t_130[j,0,n]*w_y_z_t_130[j,k,n]/nt
+                  B33_norm[x,j,k] = B33_norm[x,j,k] + w_y_z_t_130[j,0,n]*w_y_z_t_130[j,k,n]/nt
 
 
       B33_norm[x,j,:] = B33_norm[x,j,:]/B33_norm[x,j,0]
@@ -126,19 +127,20 @@ for x in range(len(B33_norm[:,0,0])):
 
 
 z = np.linspace(0,0.2,nk)
-x = [0.65,0.8,1.1,1.3]
 for fig in range(4):
    plt.figure()
    plt.subplots_adjust(left=0.20,bottom=0.20)
-   plt.plot(z,B33_norm[fig,0,:],"b")
-   plt.plot(z,B33_norm[fig,1,:],"r")
-   plt.plot(z,B33_norm[fig,2,:],"k")
-   plt.plot(z,B33_norm[fig,3,:],"g")
-   plt.plot(z,B33_norm[fig,4,:],"b-.")
+   plt.plot(z,B33_norm[fig,0,:],"b",label="$j=10$")
+   plt.plot(z,B33_norm[fig,1,:],"r",label="$j=30$")
+   plt.plot(z,B33_norm[fig,2,:],"k",label="$j=50$")
+   plt.plot(z,B33_norm[fig,3,:],"g",label="$j=70$")
+   plt.plot(z,B33_norm[fig,4,:],"b-.",label="$j=90$")
 
+   plt.ylim([0,1])
+   plt.xlim([z[0],z[-1]])
    plt.xlabel("z")
    plt.ylabel("$B_{33}^{norm} ( x_3^A,\hat{x}_3)$")
-   plt.title(f"Two point correlation, x = {x[fig]}")
+   plt.title(f"Two point correlation, x = {x_pos[fig]}")
    plt.savefig("Assignment 2/Assignment 2b/2point" + str(fig) + ".png")
 
 xy= np.loadtxt(name_dat + "hump_grid_nasa_les_coarse_noflow.dat")
