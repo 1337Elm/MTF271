@@ -108,30 +108,29 @@ B33_norm065 = np.zeros((nj,nk))
 B33_norm08 = np.zeros((nj,nk))
 B33_norm11 = np.zeros((nj,nk))
 B33_norm13 = np.zeros((nj,nk))
-for x in range(len(x_pos)):
-   for j in range(nj):
-      for k in range(nk):
-         for n in range(nt):
-               B33_norm065[j,k] += w_y_z_t_65[j,0,n]*w_y_z_t_65[j,k,n]/nt
-               B33_norm08[j,k] += w_y_z_t_80[j,0,n]*w_y_z_t_80[j,k,n]/nt
-               B33_norm11[j,k] += w_y_z_t_110[j,0,n]*w_y_z_t_110[j,k,n]/nt
-               B33_norm13[j,k] += w_y_z_t_130[j,0,n]*w_y_z_t_130[j,k,n]/nt
+for j in range(nj):
+   for k in range(nk):
+      for n in range(nt):
+            B33_norm065[j,k] += w_y_z_t_65[j,0,n]*w_y_z_t_65[j,k,n]/nt
+            B33_norm08[j,k] += w_y_z_t_80[j,0,n]*w_y_z_t_80[j,k,n]/nt
+            B33_norm11[j,k] += w_y_z_t_110[j,0,n]*w_y_z_t_110[j,k,n]/nt
+            B33_norm13[j,k] += w_y_z_t_130[j,0,n]*w_y_z_t_130[j,k,n]/nt
 
 
-      B33_norm065[j,:] /= B33_norm065[j,0]
-      B33_norm08[j,:] /= B33_norm08[j,0]
-      B33_norm11[j,:] /= B33_norm11[j,0]
-      B33_norm13[j,:] /= B33_norm13[j,0]
+   B33_norm065[j,:] /= B33_norm065[j,0]
+   B33_norm08[j,:] /= B33_norm08[j,0]
+   B33_norm11[j,:] /= B33_norm11[j,0]
+   B33_norm13[j,:] /= B33_norm13[j,0]
 
-      for p in range(nk):
-         if B33_norm065[j,p] < 0:
-            B33_norm065[j,p] = 0
-         if B33_norm08[j,p] < 0:
-            B33_norm08[j,p] = 0
-         if B33_norm11[j,p] < 0:
-            B33_norm11[j,p] = 0
-         if B33_norm13[j,p] < 0:
-            B33_norm13[j,p] = 0
+   for p in range(nk):
+      if B33_norm065[j,p] < 0:
+         B33_norm065[j,p] = 0
+      if B33_norm08[j,p] < 0:
+         B33_norm08[j,p] = 0
+      if B33_norm11[j,p] < 0:
+         B33_norm11[j,p] = 0
+      if B33_norm13[j,p] < 0:
+         B33_norm13[j,p] = 0
 
 
 z = np.linspace(0,0.2,nk)
