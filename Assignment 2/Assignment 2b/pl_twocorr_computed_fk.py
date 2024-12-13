@@ -206,7 +206,21 @@ for fig in range(4):
 
    plt.title(f"Two point correlation, x = {x_pos[fig]}")
    plt.savefig("Assignment 2/Assignment 2b/2point" + str(x_pos[fig]) + ".png")
-         
+
+
+dz = z[-1]/32
+x_pos = [0.65, 0.8, 1.1, 1.3]
+for i in range(4):
+   print("===============================================")
+   for j in range(nj):
+      if i == 0:
+         print(f"The integral length scale for x = {x_pos[i]} is L = {np.round(np.trapz(B33_norm065[j])*dz,5)}")
+      elif i == 1:
+         print(f"The integral length scale for x = {x_pos[i]} is L = {np.round(np.trapz(B33_norm08[j])*dz,5)}")
+      elif i == 2:
+         print(f"The integral length scale for x = {x_pos[i]} is L = {np.round(np.trapz(B33_norm11[j])*dz,5)}")
+      else:
+         print(f"The integral length scale for x = {x_pos[i]} is L = {np.round(np.trapz(B33_norm13[j])*dz,5)}")
 
 xy= np.loadtxt(name_dat + "hump_grid_nasa_les_coarse_noflow.dat")
 x1=xy[:,0]
