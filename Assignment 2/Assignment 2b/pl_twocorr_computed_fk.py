@@ -140,30 +140,64 @@ for fig in range(4):
 
    if fig == 0:
       plt.plot(z,B33_norm065[0,:],"b",label="$j=10$")
+      plt.scatter(z[::2],B33_norm065[0,::2], color = "b", marker="o")
+
       plt.plot(z,B33_norm065[1,:],"r",label="$j=30$")
+      plt.scatter(z[::2],B33_norm065[1,::2], color = "r", marker="+")
+
       plt.plot(z,B33_norm065[2,:],"k",label="$j=50$")
+      plt.scatter(z[::2],B33_norm065[2,::2], color = "k", marker="^")
+
       plt.plot(z,B33_norm065[3,:],"g",label="$j=70$")
+      plt.scatter(z[::2],B33_norm065[3,::2], color = "g", marker="*")
+
       plt.plot(z,B33_norm065[4,:],"b-.",label="$j=90$")
-      plt.title(f"Two point correlation, x = {x_pos[fig]}")
-      plt.savefig("Assignment 2/Assignment 2b/2point" + str(x_pos[fig]) + ".png")
+      plt.scatter(z[::2],B33_norm065[4,::2], color = "b", marker="X")
    elif fig == 1:
       plt.plot(z,B33_norm08[0,:],"b",label="$j=10$")
+      plt.scatter(z[::2],B33_norm08[0,::2], color = "b", marker="o")
+
       plt.plot(z,B33_norm08[1,:],"r",label="$j=30$")
+      plt.scatter(z[::2],B33_norm08[1,::2], color = "r", marker="+")
+
       plt.plot(z,B33_norm08[2,:],"k",label="$j=50$")
+      plt.scatter(z[::2],B33_norm08[2,::2], color = "k", marker="^")
+
       plt.plot(z,B33_norm08[3,:],"g",label="$j=70$")
+      plt.scatter(z[::2],B33_norm08[3,::2], color = "g", marker="*")
+
       plt.plot(z,B33_norm08[4,:],"b-.",label="$j=90$")
+      plt.scatter(z[::2],B33_norm08[4,::2], color = "b", marker="X")
    elif fig == 2:
       plt.plot(z,B33_norm11[0,:],"b",label="$j=10$")
+      plt.scatter(z[::2],B33_norm11[0,::2], color = "b", marker="o")
+
       plt.plot(z,B33_norm11[1,:],"r",label="$j=30$")
+      plt.scatter(z[::2],B33_norm11[1,::2], color = "r", marker="+")
+
       plt.plot(z,B33_norm11[2,:],"k",label="$j=50$")
+      plt.scatter(z[::2],B33_norm11[2,::2], color = "k", marker="^")
+
       plt.plot(z,B33_norm11[3,:],"g",label="$j=70$")
+      plt.scatter(z[::2],B33_norm11[3,::2], color = "g", marker="*")
+
       plt.plot(z,B33_norm11[4,:],"b-.",label="$j=90$")
+      plt.scatter(z[::2],B33_norm11[4,::2], color = "b", marker="X")
    else:
       plt.plot(z,B33_norm13[0,:],"b",label="$j=10$")
+      plt.scatter(z[::2],B33_norm13[0,::2], color = "b", marker="o")
+
       plt.plot(z,B33_norm13[1,:],"r",label="$j=30$")
+      plt.scatter(z[::2],B33_norm13[1,::2], color = "r", marker="+")
+
       plt.plot(z,B33_norm13[2,:],"k",label="$j=50$")
+      plt.scatter(z[::2],B33_norm13[2,::2], color = "k", marker="^")
+
       plt.plot(z,B33_norm13[3,:],"g",label="$j=70$")
+      plt.scatter(z[::2],B33_norm13[3,::2], color = "g", marker="*")
+
       plt.plot(z,B33_norm13[4,:],"b-.",label="$j=90$")
+      plt.scatter(z[::2],B33_norm13[4,::2], color = "b", marker="X")
 
    plt.xlim([z[0],z[-1]+0.01])
    plt.legend(fontsize = "xx-small")
